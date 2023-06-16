@@ -24,31 +24,53 @@ const fileContent = fs.readFileSync(filePath, 'utf8')
 const template = handlebars.compile(fileContent);
 
 app.post('/send-email', async (req: Request, res: Response) => {
-    const {email, name, termsOfService} = req.body
-    const html = template({ name, email });
-    const transporter = nodemailer.createTransport({
-        host: 'sandbox.smtp.mailtrap.io',
-        port: 2525,
-        secure: false,
-        auth: {
-            user: process.env.EMAIL,
-            pass: process.env.PASSWORD,
-        },
-    })
-    const mailOptions = {
-        from: process.env.EMAIL,
-        to: email,
-        subject: 'Прайс',
-        html: html,
-        //text: `${name ? 'Здравствуйте, ' + name : 'Здравствуйте!'}`,
-        attachments: [{
-            filename: 'price.xlsx',
-            path: path.join(__dirname, '..', 'src/common/price.xlsx'),
-            contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        }]
+    try {
+        //объект с входящими данными на сервер
+        const {email, name, termsOfService} = req.body
+        //валидация почты
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+        //проверка на валидность почты
+        if (!emailRegex.test(email)) {
+            res.status(400).send({ error: 'Неверный адрес электронной почты!' });
+            return;
+        }
+        //валидация имени
+        const nameRegex = /^[a-zA-Zа-яА-ЯёЁ ]{1,20}$/
+        if (!nameRegex.test(name)) {
+            res.status(400).send({ error: 'Неверное имя!' });
+            return;
+        }
+        //передача данных в файл common/template.html для настройки отправляемого письма
+        const html = template({ name, email });
+        //настройка транспорта
+        const transporter = nodemailer.createTransport({
+            host: 'sandbox.smtp.mailtrap.io',
+            port: 2525,
+            secure: false,
+            auth: {
+                user: process.env.EMAIL,
+                pass: process.env.PASSWORD,
+            },
+        })
+        const mailOptions = {
+            from: process.env.EMAIL,
+            to: email,
+            subject: 'Прайс',
+            html: html,
+            //text: `${name ? 'Здравствуйте, ' + name : 'Здравствуйте!'}`,
+            attachments: [{
+                filename: 'price.xlsx',
+                path: path.join(__dirname, '..', 'src/common/price.xlsx'),
+                contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            }]
+        }
+        await transporter.sendMail(mailOptions)
+        //возврат положительного отвтета
+        res.status(200).send({message: 'Прайс отправлен на Ваш почтовый ящик!'})
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({error: 'что-то пошло не так, попробуйте ещё раз'});
     }
-    await transporter.sendMail(mailOptions)
-    res.status(200).send('Проверьте свой почтовый ящик!')
 })
 
 
