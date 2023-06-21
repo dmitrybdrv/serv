@@ -9,3 +9,6 @@
 
 #env
 .env
+
+#dkim
+dkim.private
