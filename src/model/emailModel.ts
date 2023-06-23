@@ -1,12 +1,14 @@
 import mongoose from "mongoose";
 
-const EmailSchema = new mongoose.Schema(
+const EmailSchemaModel = new mongoose.Schema(
     {
         email: { type: String, required: true },
+        blockList: { type: Boolean, required: true },
+        userName: {type: String, required: false}
     },
     {
         timestamps: true,
     },
 )
 
-export default mongoose.model('Email', EmailSchema)
+export default mongoose.model('Email', EmailSchemaModel)
