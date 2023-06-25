@@ -95,13 +95,14 @@ app.post('/send-email', async (req: Request, res: Response) => {
     } catch (error) {
         console.error(error);
         res.status(500).send({error: 'Что-то пошло не так, попробуйте ещё раз'});
-    } finally {
-        // закрытие соединения с базой данных
-        mongoose.connection.close();
     }
+   /* finally {
+        // закрытие соединения с базой данных
+        await mongoose.connection.close();
+    }*/
 })
 
-app.post('/unsubscribe-page/:id', async (req: Request, res: Response) => {
+app.post('/unsubscribe-page', async (req: Request, res: Response) => {
     try {
         const {email} = req.body
         const foundEmail = await EmailSchema.findOne({ email })
@@ -113,10 +114,11 @@ app.post('/unsubscribe-page/:id', async (req: Request, res: Response) => {
     } catch (error) {
         console.error(error);
         res.status(500).send({error: 'Что-то пошло не так, попробуйте ещё раз'});
-    } finally {
-        // закрытие соединения с базой данных
-        mongoose.connection.close();
     }
+   /* finally {
+        // закрытие соединения с базой данных
+        await mongoose.connection.close();
+    }*/
 })
 
 const start = async () => {
