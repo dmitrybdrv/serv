@@ -30,18 +30,27 @@ app.post('/send-email', async (req: Request, res: Response) => {
         //объект с входящими данными на сервер
         const {email, name, termsOfService} = req.body
 
+        //
+        let emailId, newEmail;
+
         //проверка email на наличие в базе и поля block
-        const foundEmail = await EmailSchema.findOne({ email })
-        if(!foundEmail) {
+        const foundEmail = await EmailSchema.findOne({email})
+        if (!foundEmail) {
             //создание нового объекта Email и сохранение его в базе данных
-            const newEmail = new EmailSchema({ email, name, blockList: false });
+            newEmail = new EmailSchema({email, name, blockList: false});
             await newEmail.save();
+
         } else {
-            if(foundEmail.blockList) {
+            if (foundEmail.blockList) {
                 res.status(400).send({error: 'Почта заблокирована!'})
                 return
             }
         }
+
+        //Создание id при новой регистраци
+        emailId = foundEmail?._id ? foundEmail._id.toString() : newEmail?._id.toString()
+        console.log(emailId)
+
 
         //валидация почты
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
@@ -59,8 +68,9 @@ app.post('/send-email', async (req: Request, res: Response) => {
             return;
         }
 
+
         //передача данных в файл common/template.html для настройки отправляемого письма
-        const html = template({name})
+        const html = template({name, emailId})
 
         //настройка транспорта
         const transporter = nodemailer.createTransport({
@@ -95,27 +105,25 @@ app.post('/send-email', async (req: Request, res: Response) => {
     } catch (error) {
         console.error(error);
         res.status(500).send({error: 'Что-то пошло не так, попробуйте ещё раз'});
-    }
-   /* finally {
+    } /*finally {
         // закрытие соединения с базой данных
         await mongoose.connection.close();
     }*/
 })
 
-app.post('/unsubscribe-page', async (req: Request, res: Response) => {
+app.post('/unsubscribe-page/:id', async (req: Request, res: Response) => {
     try {
-        const {email} = req.body
-        const foundEmail = await EmailSchema.findOne({ email })
-        if (foundEmail) {
-            foundEmail.blockList = true;
-            await foundEmail.save();
+        const {emailId} = req.body
+        const foundEmailId = await EmailSchema.findOne({emailId})
+        if (foundEmailId) {
+            foundEmailId.blockList = true;
+            await foundEmailId.save();
         }
         res.status(200).send({message: 'Вы отписались!'})
     } catch (error) {
         console.error(error);
         res.status(500).send({error: 'Что-то пошло не так, попробуйте ещё раз'});
-    }
-   /* finally {
+    } /*finally {
         // закрытие соединения с базой данных
         await mongoose.connection.close();
     }*/
@@ -131,6 +139,7 @@ const start = async () => {
         app.listen(PORT, () => console.log(`Server started on PORT = ${PORT}`));
     } catch (e) {
         console.log(e);
+        process.exit(1);
     }
 }
 start()

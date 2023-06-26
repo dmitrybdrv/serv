@@ -18,8 +18,11 @@
     </div>
     <div>
         <p style="font-size: 14px; color: #444443">
+            {{#if emailId}}
             Если Вы не оправляли запрос на предоставление актуального прайса и не хотите больше получать от нас письма,
-            отпишитесь нажав кнопку: <a href="http://localhost:5173/landing/unsubscribe-page" target="_blank">Отписаться</a>
+            перейдите по ссылке и отпишитесь: <a href="http://localhost:5173/landing/unsubscribe-page/{{emailId}}"
+                                                 target="_blank">Отписаться</a>
+            {{/if}}
         </p>
     </div>
 </div>
