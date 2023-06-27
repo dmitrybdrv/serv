@@ -19,43 +19,47 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
 const DBUrl = process.env.DB_HOST || ''
-
+const UNSUBSCRIBE_URL = process.env.UNSUBSCRIBE_URL
 
 const filePath = path.join(__dirname, '..', 'src/common/template.html')
 const fileContent = fs.readFileSync(filePath, 'utf8')
 const template = handlebars.compile(fileContent)
 
+/**
+ * Запрос на отправку письма
+ */
 app.post('/send-email', async (req: Request, res: Response) => {
     try {
         //объект с входящими данными на сервер
-        const {email, name, termsOfService} = req.body
+        const {email, name} = req.body
 
-        //
+        //инициализация emailId для привязки к URL (в механизме отписки), newEmail - создание нового адреса если нет в базе
         let emailId, newEmail;
 
-        //проверка email на наличие в базе и поля block
+
+        //проверка на наличие в базе
         const foundEmail = await EmailSchema.findOne({email})
+
         if (!foundEmail) {
-            //создание нового объекта Email и сохранение его в базе данных
+            //добавление в базу нового пользователя (адрес эл.почты)
             newEmail = new EmailSchema({email, name, blockList: false});
             await newEmail.save();
 
         } else {
             if (foundEmail.blockList) {
+                //если свойство blockList, тогда почта заблокирована
                 res.status(400).send({error: 'Почта заблокирована!'})
                 return
             }
         }
 
-        //Создание id при новой регистраци
+        //Создание id при новой регистраци либо достаём _id ранее созданный, если запись уже была в базе
         emailId = foundEmail?._id ? foundEmail._id.toString() : newEmail?._id.toString()
-        console.log(emailId)
-
 
         //валидация почты
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
-        //проверка на валидность почты
+        //проверка валидности почты
         if (!emailRegex.test(email)) {
             res.status(400).send({error: 'Неверный адрес электронной почты!'})
             return;
@@ -70,7 +74,7 @@ app.post('/send-email', async (req: Request, res: Response) => {
 
 
         //передача данных в файл common/template.html для настройки отправляемого письма
-        const html = template({name, emailId})
+        const html = template({name, emailId, UNSUBSCRIBE_URL})
 
         //настройка транспорта
         const transporter = nodemailer.createTransport({
@@ -105,12 +109,12 @@ app.post('/send-email', async (req: Request, res: Response) => {
     } catch (error) {
         console.error(error);
         res.status(500).send({error: 'Что-то пошло не так, попробуйте ещё раз'});
-    } /*finally {
-        // закрытие соединения с базой данных
-        await mongoose.connection.close();
-    }*/
+    }
 })
 
+/**
+ * Добавление почтового адреса в блок лист (отписка от рассылки)
+ */
 app.post('/unsubscribe-page/:id', async (req: Request, res: Response) => {
     try {
         const {emailId} = req.body
@@ -123,10 +127,10 @@ app.post('/unsubscribe-page/:id', async (req: Request, res: Response) => {
     } catch (error) {
         console.error(error);
         res.status(500).send({error: 'Что-то пошло не так, попробуйте ещё раз'});
-    } /*finally {
+    } finally {
         // закрытие соединения с базой данных
         await mongoose.connection.close();
-    }*/
+    }
 })
 
 const start = async () => {

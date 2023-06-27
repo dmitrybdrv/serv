@@ -3,8 +3,8 @@ import mongoose from "mongoose";
 const EmailSchemaModel = new mongoose.Schema(
     {
         email: { type: String, required: true },
-        blockList: { type: Boolean, required: true },
-        userName: {type: String, required: false}
+        name: {type: String},
+        blockList: { type: Boolean, required: true }
     },
     {
         timestamps: true,
