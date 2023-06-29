@@ -130,6 +130,9 @@ app.post('/unsubscribe-page/:id', async (req: Request, res: Response) => {
     }
 })
 
+/**
+ * Подключение к базе данных
+ */
 const start = async () => {
     try {
         await mongoose.connect(DBUrl, {
