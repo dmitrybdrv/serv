@@ -36,7 +36,6 @@ app.post('/send-email', async (req: Request, res: Response) => {
         //инициализация emailId для привязки к URL (в механизме отписки), newEmail - создание нового адреса если нет в базе
         let emailId, newEmail;
 
-
         //проверка на наличие в базе
         const foundEmail = await EmailSchema.findOne({email})
 
@@ -71,7 +70,6 @@ app.post('/send-email', async (req: Request, res: Response) => {
             res.status(400).send({error: 'Неверное имя!'})
             return;
         }
-
 
         //передача данных в файл common/template.html для настройки отправляемого письма
         const html = template({name, emailId, UNSUBSCRIBE_URL})
