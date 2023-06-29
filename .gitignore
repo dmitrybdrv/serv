@@ -4,8 +4,6 @@
 #idea
 /.idea
 
-#dist
-/dist
 
 #env
 .env
