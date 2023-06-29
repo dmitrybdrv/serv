@@ -11,7 +11,7 @@ import EmailSchema from './model/emailModel'
 dotenv.config()
 
 const app = express()
-const PORT = 3000
+const PORT = 5000
 
 app.use(cors())
 app.use(express.json())
