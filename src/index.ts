@@ -29,6 +29,7 @@ const template = handlebars.compile(fileContent)
  */
 app.post('/send-email', async (req: Request, res: Response) => {
     try {
+        debugger
         //объект с входящими данными на сервер
         const {email, name} = req.body
 
