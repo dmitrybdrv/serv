@@ -112,11 +112,23 @@ app.post('/send-email', (req, res) => __awaiter(void 0, void 0, void 0, function
             to: email,
             subject: 'Прайс',
             html: html,
-            attachments: [{
-                    filename: 'price.xlsx',
-                    path: path_1.default.join(__dirname, '..', 'src/common/price.xlsx'),
+            attachments: [
+                {
+                    filename: 'gillettePrice.xlsx',
+                    path: path_1.default.join(__dirname, '..', 'src/common/gillettePrice.xlsx'),
                     contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                }]
+                },
+                {
+                    filename: 'orderForm.xlsx',
+                    path: path_1.default.join(__dirname, '..', 'src/common/orderForm.xlsx'),
+                    contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                },
+                {
+                    filename: 'instruction.docx',
+                    path: path_1.default.join(__dirname, '..', 'src/common/instruction.docx'),
+                    contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                },
+            ]
         };
         //ответ на запрос /send-email
         yield transporter.sendMail(mailOptions);

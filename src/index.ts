@@ -91,11 +91,23 @@ app.post('/send-email', async (req: Request, res: Response) => {
             to: email,
             subject: 'Прайс',
             html: html,
-            attachments: [{
-                filename: 'price.xlsx',
-                path: path.join(__dirname, '..', 'src/common/price.xlsx'),
+            attachments: [
+                {
+                    filename: 'gillettePrice.xlsx',
+                path: path.join(__dirname, '..', 'src/common/gillettePrice.xlsx'),
                 contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            }]
+                },
+                {
+                    filename: 'orderForm.xlsx',
+                    path: path.join(__dirname, '..', 'src/common/orderForm.xlsx'),
+                    contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                },
+                {
+                    filename: 'instruction.docx',
+                    path: path.join(__dirname, '..', 'src/common/instruction.docx'),
+                    contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                },
+            ]
         }
 
         //ответ на запрос /send-email
