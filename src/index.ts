@@ -105,8 +105,8 @@ app.post('/send-email', async (req: Request, res: Response) => {
             attachments: [
                 {
                     filename: 'gillettePrice.xlsx',
-                path: path.join(__dirname, '..', 'src/common/gillettePrice.xlsx'),
-                contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    path: path.join(__dirname, '..', 'src/common/gillettePrice.xlsx'),
+                    contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 },
                 {
                     filename: 'orderForm.xlsx',
