@@ -25,11 +25,22 @@ const fileContent = fs.readFileSync(filePath, 'utf8')
 const template = handlebars.compile(fileContent)
 
 /**
+ * Тестовый запрос для проверки работы сервера
+ */
+app.get('/', async (req: Request, res: Response) => {
+    try {
+        res.status(200).send('Hello world!')
+    } catch (e) {
+        console.error(e);
+        res.status(500).send({error: 'Сервер не отвечает!'});
+    }
+})
+
+/**
  * Запрос на отправку письма
  */
 app.post('/send-email', async (req: Request, res: Response) => {
     try {
-        debugger
         //объект с входящими данными на сервер
         const {email, name} = req.body
 

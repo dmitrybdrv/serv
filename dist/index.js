@@ -56,11 +56,22 @@ const filePath = path_1.default.join(__dirname, '..', 'src/common/template.html'
 const fileContent = fs_1.default.readFileSync(filePath, 'utf8');
 const template = handlebars_1.default.compile(fileContent);
 /**
+ * Тестовый запрос для проверки работы сервера
+ */
+app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        res.status(200).send('Hello world!');
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500).send({ error: 'Сервер не отвечает!' });
+    }
+}));
+/**
  * Запрос на отправку письма
  */
 app.post('/send-email', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        debugger;
         //объект с входящими данными на сервер
         const { email, name } = req.body;
         //инициализация emailId для привязки к URL (в механизме отписки), newEmail - создание нового адреса если нет в базе
