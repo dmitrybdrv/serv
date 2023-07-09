@@ -56,7 +56,7 @@ const filePath = path_1.default.join(__dirname, '..', 'src/common/template.html'
 const fileContent = fs_1.default.readFileSync(filePath, 'utf8');
 const template = handlebars_1.default.compile(fileContent);
 /**
- * Тестовый запрос для проверки работы сервера.
+ * Тестовый запрос для проверки работы сервера. (vercel)
  */
 app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {

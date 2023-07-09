@@ -25,7 +25,7 @@ const fileContent = fs.readFileSync(filePath, 'utf8')
 const template = handlebars.compile(fileContent)
 
 /**
- * Тестовый запрос для проверки работы сервера.
+ * Тестовый запрос для проверки работы сервера. (vercel)
  */
 app.get('/', async (req: Request, res: Response) => {
     try {
