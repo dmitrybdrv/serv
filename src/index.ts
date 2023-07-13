@@ -17,7 +17,8 @@ const PORT = 5000
 app.use(cors({
     origin: 'https://gilletteopt.ru',
     methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type']
+    allowedHeaders: ['Content-Type'],
+    credentials: true
 }));
 app.options('*', cors());
 app.use(express.json())
