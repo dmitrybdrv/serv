@@ -13,18 +13,16 @@ dotenv.config()
 const app = express()
 const PORT = 5000
 
-app.use(cors())
-app.use(express.json())
-app.use(express.urlencoded({extended: true}))
-
 /**
  * Разрешены запросы только с указанного url
  */
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "https://gilletteopt.ru");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
+const corsOptions = {
+    origin: 'https://gilletteopt.ru'
+}
+app.use(cors(corsOptions))
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
+
 
 const DBUrl = process.env.DB_HOST || ''
 const UNSUBSCRIBE_URL = process.env.UNSUBSCRIBE_URL
